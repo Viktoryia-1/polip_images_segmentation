@@ -7,7 +7,7 @@ from PIL import Image
 
 app = Flask(__name__, template_folder='templates')
 model = tf.saved_model.load('./check')
-test_path = 'static/test_img.jpg'
+test_path = 'static/uploads/test_img.png'
 
 
 @app.route('/', methods=['GET'])
@@ -24,7 +24,7 @@ def test():
     mask_path = os.path.join('static', 'uploads', 'prediction.png')
     mask_img = Image.fromarray(prediction)
     mask_img.save(mask_path)
-    return render_template('result.html', mask_path=mask_path, original_img=test_path)
+    return render_template('test_result.html', mask_path=mask_path, original_img=test_path)
 
 
 
@@ -33,6 +33,7 @@ def predict():
     if request.method == 'POST':
         original_img = request.files['image']
         original_img_path = os.path.join('static', 'uploads', 'original_img.png')
+        print(original_img_path)
         original_img.save(original_img_path)
         img = preprocess_image(original_img_path)
         prediction = model(img, training=False).numpy()
